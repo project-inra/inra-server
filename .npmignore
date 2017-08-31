@@ -1,6 +1,7 @@
 # Project Specific
 node_modules
 *.log
+*.lerna*
 .nyc_output/
 .eslintcache
 
