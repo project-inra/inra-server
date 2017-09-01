@@ -20,6 +20,34 @@ Then with a module bundler like [webpack](https://webpack.github.io/), use as yo
 import Container from "inra-server-container";
 ```
 
+## API
+
+`new Container()`
+
+#### `.set( key, value )`
+
+Sets the value for the key in the Container object. Returns the Map object.
+
+#### `.get( key [, defaultValue] )`
+
+Returns the value associated to the key, or `defaultValue` if there is none.
+
+#### `.has( key )`
+
+Returns a boolean asserting whether a value has been associated to the key in the Container object or not.
+
+#### `.delete( key )`
+
+Removes any value associated to the key and returns `true` if it was deleted successfully, or `false` otherwise.
+
+#### `.clear()`
+
+Removes all key/value pairs from the Map object.
+
+#### `.size`
+
+Returns the number of key/value pairs in the Map object.
+
 ### Bug reporting
 
 [![Github Open Issues](https://img.shields.io/github/issues-raw/ProjectInra/inra-server.svg)](https://github.com/ProjectInra/inra-server/issues)
