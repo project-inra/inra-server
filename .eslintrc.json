@@ -2,11 +2,18 @@
     "root" : true,
 
     "parser" : "babel-eslint",
-    "extends" : [ "eslint:recommended" ],
+    "plugins" : [ "flowtype"  ],
+    "extends" : [ "eslint:recommended", "plugin:flowtype/recommended" ],
 
     "env" : {
         "es6" : true,
         "node" : true
+    },
+
+    "settings" : {
+        "flowtype" : {
+            "onlyFilesWithFlowAnnotation" : true
+        }
     },
 
     "parserOptions" : {
@@ -56,6 +63,10 @@
         "arrow-spacing" : [ "error", { "before" : true, "after" : true } ],
 
         "one-var-declaration-per-line" : [ "error", "always" ],
-        "one-var" : [ "error", { "initialized": "always", "uninitialized": "never" } ]
+        "one-var" : [ "error", { "initialized": "always", "uninitialized": "never" } ],
+
+        "flowtype/no-types-missing-file-annotation": 0,
+        "flowtype/define-flow-type" : 1,
+        "flowtype/use-flow-type" : 1
     }
 }
