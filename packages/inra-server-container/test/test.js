@@ -18,7 +18,7 @@ describe( "inra-server-container", function () {
         } );
     } );
 
-    describe( "#get( key )", function () {
+    describe( "#get( key, defaultValue )", function () {
         it( "should return correct values for existing keys", function () {
             assert.equal( a.get( "a" ), "foo" );
             assert.equal( a.get( "b" ), "bar" );
@@ -26,6 +26,10 @@ describe( "inra-server-container", function () {
 
         it( "should return undefined for unsed keys", function () {
             assert.equal( a.get( "inexisting" ), undefined );
+        } );
+
+        it( "should return defaultValue for unsed keys", function () {
+            assert.equal( a.get( "inexisting", "default" ), "default" );
         } );
     } );
 
