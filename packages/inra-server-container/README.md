@@ -48,6 +48,8 @@ Removes all key/value pairs from the Map object.
 
 Returns the number of key/value pairs in the Map object.
 
+## Contributing
+
 ### Bug reporting
 
 [![Github Open Issues](https://img.shields.io/github/issues-raw/ProjectInra/inra-server.svg)](https://github.com/ProjectInra/inra-server/issues)
@@ -59,3 +61,28 @@ Returns the number of key/value pairs in the Map object.
 ### License
 
 Inra Server is built and maintained by [Bartosz Łaniewski](https://github.com/Bartozzz). The full list of contributors can be found [here](https://github.com/ProjectInra/inra-server/graphs/contributors). Inra's code is [MIT licensed](https://github.com/ProjectInra/inra-server/blob/master/LICENSE).
+
+### Development
+
+We have prepared multiple commands to help you develop `inra-server-container` on your own. Don't forget to install all `Node.js` dependencies from [npm](https://www.npmjs.com/). You will need a local copy of [Node.js](https://nodejs.org/en/) installed on your machine.
+
+```bash
+$ sudo npm install
+```
+
+#### Usage
+
+```bash
+$ sudo npm run <command>
+```
+
+#### List of commands
+
+| Command       | Description                                       |
+|---------------|---------------------------------------------------|
+| `build`       | Builds `inra-server-container`                    |
+| `watch`       | Re-builds `inra-server-container` on changes      |
+| `clean`       | Deletes builds ands cache                         |
+| `lint`        | Fixes Lint errors                                 |
+| `flow`        | Checks Flow errors                                |
+| `test`        | Checks Flow errors and runs tests                 |
