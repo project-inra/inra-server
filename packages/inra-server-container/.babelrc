@@ -9,6 +9,9 @@
 
     "plugins" : [
         "dev-expression",
-        "add-module-exports"
+        "add-module-exports",
+        [ "babel-plugin-transform-builtin-extend", {
+            "globals" : [ "Error", "Map" ]
+        } ]
     ]
 }
