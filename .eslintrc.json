@@ -1,72 +1,38 @@
 {
-    "root" : true,
-
-    "parser" : "babel-eslint",
-    "plugins" : [ "flowtype"  ],
-    "extends" : [ "eslint:recommended", "plugin:flowtype/recommended" ],
-
-    "env" : {
-        "es6" : true,
-        "node" : true
-    },
-
-    "settings" : {
-        "flowtype" : {
-            "onlyFilesWithFlowAnnotation" : true
-        }
-    },
-
-    "parserOptions" : {
-        "ecmaVersion" : 6,
-        "sourceType" : "module",
-        "ecmaFeatures" : {
-            "experimentalObjectRestSpread" : true
-        }
-    },
-
-    "rules" : {
-        "indent" : [ "error", 4, { "SwitchCase" : 1 } ],
-        "quotes" : [ "error", "double" ],
-        "max-depth" : [ "warn", 5 ],
-        "max-len" : [ "warn", 100 ],
-        "eol-last" : [ "warn", "always" ],
-
-        "semi" : [ "error", "always" ],
-        "linebreak-style" : [ "error", "unix" ],
-
-        "prefer-const" : [ "warn" ],
-        "prefer-arrow-callback" : [ "warn" ],
-
-        "no-var" : [ "error" ],
-        "no-console" : [ "off" ],
-        "no-lonely-if" : [ "warn" ],
-        "no-unused-vars" : [ "warn" ],
-        "no-multi-assign" : [ "warn" ],
-        "no-await-in-loop" : [ "error" ],
-        "no-useless-rename" : [ "error" ],
-        "no-trailing-spaces" : [ "warn" ],
-        "no-duplicate-imports" : [ "error" ],
-        "no-useless-constructor" : [ "error" ],
-        "no-multiple-empty-lines" : [ "warn", { "max" : 2 } ],
-
-        "padded-blocks" : [ "error", "never" ],
-        "space-unary-ops" : [ "error", { "words" : true, "nonwords" : false } ],
-        "space-infix-ops" : [ "error", { "int32Hint" : false } ],
-        "space-in-parens" : [ "error", "always" ],
-        "space-before-blocks" : [ "error", "always" ],
-        "space-before-function-paren" : [ "error", {
-            "anonymous"  : "always",
-            "named"      : "never",
-            "asyncArrow" : "ignore"
-        } ],
-
-        "arrow-spacing" : [ "error", { "before" : true, "after" : true } ],
-
-        "one-var-declaration-per-line" : [ "error", "always" ],
-        "one-var" : [ "error", { "initialized": "always", "uninitialized": "never" } ],
-
-        "flowtype/no-types-missing-file-annotation": 0,
-        "flowtype/define-flow-type" : 1,
-        "flowtype/use-flow-type" : 1
+  "parser": "babel-eslint",
+  "extends": ["eslint:recommended", "google"],
+  "plugins": ["import"],
+  "env": {
+    "es6": true,
+    "node": true,
+    "browser": true,
+    "shared-node-browser": true
+  },
+  "parserOptions": {
+    "impliedStrict": true,
+    "ecmaVersion": 7,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true,
+      "experimentalObjectRestSpread": true
     }
+  },
+  "rules": {
+    "no-console": [0],
+    "no-invalid-this": [0],
+    "no-param-reassign": [0],
+    "indent": [2, 2],
+    "quotes": [2, "double"],
+    "space-in-parens": [2, "never"],
+    "require-jsdoc": [0],
+    "react/sort-comp": [0],
+    "react/no-danger": [0],
+    "react/no-array-index-key": [0],
+    "react/require-default-props": [0],
+    "react/prefer-stateless-function": [0],
+    "global-require": [0],
+    "import/first": [0],
+    "import/prefer-default-export": [0],
+    "import/no-extraneous-dependencies": [0]
+  }
 }

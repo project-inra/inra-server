@@ -1,4 +1,4 @@
-import { ContainerInterface } from "./ContainerInterface";
+import {ContainerInterface} from "./ContainerInterface";
 
 /**
  * The container is a component that implements Service Location of services and
@@ -23,9 +23,9 @@ import { ContainerInterface } from "./ContainerInterface";
  */
 
 class Container extends Map implements ContainerInterface {
-    get( key: string, defaultValue: any ): any {
-        return super.get( key ) || defaultValue;
-    }
+  get(key: string, defaultValue: any): any {
+    return super.get(key) || defaultValue;
+  }
 }
 
 export default Container;

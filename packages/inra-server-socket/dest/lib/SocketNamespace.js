@@ -1,7 +1,7 @@
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -21,112 +21,112 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var SocketNamespace = function (_EventEmitter) {
-    _inherits(SocketNamespace, _EventEmitter);
+  _inherits(SocketNamespace, _EventEmitter);
 
-    /**
-     * Creates a new namespace.
-     *
-     * @param   {string}    id
-     * @param   {Object}    server
-     */
+  /**
+   * Creates a new namespace.
+   *
+   * @param   {string}    id
+   * @param   {Object}    server
+   */
 
 
-    /**
-     * Instance of the initial room from `socket.io`.
-     *
-     * @type    {Object}
-     */
-    function SocketNamespace(id, server) {
-        _classCallCheck(this, SocketNamespace);
+  /**
+   * Instance of the initial room from `socket.io`.
+   *
+   * @type    {Object}
+   */
+  function SocketNamespace(id, server) {
+    _classCallCheck(this, SocketNamespace);
 
-        var _this = _possibleConstructorReturn(this, (SocketNamespace.__proto__ || Object.getPrototypeOf(SocketNamespace)).call(this));
+    var _this = _possibleConstructorReturn(this, (SocketNamespace.__proto__ || Object.getPrototypeOf(SocketNamespace)).call(this));
 
-        _this.id = id;
-        _this.server = server;
-        _this.instance = server.io.of(id);
-        return _this;
+    _this.id = id;
+    _this.server = server;
+    _this.instance = server.io.of(id);
+    return _this;
+  }
+
+  /**
+   * Emits an `event` with `data` to everyone in the actual namespace.
+   *
+   * @param   {string}    event
+   * @param   {object}    data
+   * @return  {void}
+   */
+
+
+  /**
+   * Reference to the server the actual namespace comes from.
+   *
+   * @type    {Object}
+   */
+
+  /**
+   * Unique id for the actual namespace.
+   *
+   * @type    {string}
+   */
+
+
+  _createClass(SocketNamespace, [{
+    key: "broadcast",
+    value: function broadcast(event) {
+      var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+      this.instance.broadcast.emit(event, data);
     }
 
     /**
-     * Emits an `event` with `data` to everyone in the actual namespace.
+     * Adds a custom middleware to the actual namespace.
      *
-     * @param   {string}    event
-     * @param   {object}    data
-     * @return  {void}
+     * @param   {Function}  middleware
+     * @return  {this}
      */
 
+  }, {
+    key: "use",
+    value: function use(middleware) {
+      this.instance.use(middleware);
+
+      return this;
+    }
 
     /**
-     * Reference to the server the actual namespace comes from.
+     * Registers customs event listeners for the actual namespace.
      *
-     * @type    {Object}
+     * @return  {this}
      */
 
-    /**
-     * Unique id for the actual namespace.
-     *
-     * @type    {string}
-     */
+  }, {
+    key: "listen",
+    value: function listen() {
+      var _this2 = this;
 
+      this.instance.on("connection", function (socket) {
+        _this2.emit("connect", socket);
 
-    _createClass(SocketNamespace, [{
-        key: "broadcast",
-        value: function broadcast(event) {
-            var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+        socket.on("event", function (data) {
+          _this2.emit("event", data.action, data, socket, _this2);
+        });
 
-            this.instance.broadcast.emit(event, data);
-        }
+        socket.on("disconnect", function () {
+          _this2.emit("disconnect", socket);
+        });
 
-        /**
-         * Adds a custom middleware to the actual namespace.
-         *
-         * @param   {Function}  middleware
-         * @return  {this}
-         */
+        // Register namespace-specific events:
+        _this2.eventNames().forEach(function (event) {
+          socket.on(event, function (data) {
+            _this2.emit(event, data);
+          });
+        });
+      });
 
-    }, {
-        key: "use",
-        value: function use(middleware) {
-            this.instance.use(middleware);
+      return this;
+    }
+  }]);
 
-            return this;
-        }
-
-        /**
-         * Registers customs event listeners for the actual namespace.
-         *
-         * @return  {this}
-         */
-
-    }, {
-        key: "listen",
-        value: function listen() {
-            var _this2 = this;
-
-            this.instance.on("connection", function (socket) {
-                _this2.emit("connect", socket);
-
-                socket.on("event", function (data) {
-                    _this2.emit("event", data.action, data, socket, _this2);
-                });
-
-                socket.on("disconnect", function () {
-                    _this2.emit("disconnect", socket);
-                });
-
-                // Register namespace-specific events:
-                _this2.eventNames().forEach(function (event) {
-                    socket.on(event, function (data) {
-                        _this2.emit(event, data);
-                    });
-                });
-            });
-
-            return this;
-        }
-    }]);
-
-    return SocketNamespace;
+  return SocketNamespace;
 }(_events2.default);
 
 exports.default = SocketNamespace;
