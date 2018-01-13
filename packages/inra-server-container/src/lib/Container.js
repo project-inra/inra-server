@@ -14,11 +14,7 @@ import {ContainerInterface} from "./ContainerInterface";
  * component. Additionally, this pattern increases testability in the code, thus
  * making it less prone to errors.
  *
- * @todo We should make it more like a dependency-inector, pheraps with
- *       dependency resolving etc.
- *
  * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
- * @see https://docs.microsoft.com/en-us/scripting/javascript/reference/map-object-javascript
  * @see https://en.wikipedia.org/wiki/Inversion_of_control
  */
 

@@ -4,7 +4,7 @@ let Container = require("../dest");
 describe("inra-server-container", function() {
   let a = new Container();
 
-  describe("#set( key, value )", function() {
+  describe("#set(key, value)", function() {
     it("should set values for keys", function() {
       a.set("a", "foo");
       a.set("b", "bar");
@@ -18,33 +18,33 @@ describe("inra-server-container", function() {
     });
   });
 
-  describe("#get( key, defaultValue )", function() {
+  describe("#get(key, defaultValue)", function() {
     it("should return correct values for existing keys", function() {
       assert.equal(a.get("a"), "foo");
       assert.equal(a.get("b"), "bar");
     });
 
-    it("should return undefined for unsed keys", function() {
+    it("should return undefined for unset keys", function() {
       assert.equal(a.get("inexisting"), undefined);
     });
 
-    it("should return defaultValue for unsed keys", function() {
+    it("should return defaultValue for unset keys", function() {
       assert.equal(a.get("inexisting", "default"), "default");
     });
   });
 
-  describe("#has( key )", function() {
+  describe("#has(key)", function() {
     it("should return true for existing keys", function() {
       assert.equal(a.has("a"), true);
       assert.equal(a.has("b"), true);
     });
 
-    it("should return false for unsed keys", function() {
+    it("should return false for unset keys", function() {
       assert.equal(a.has("inexisting"), false);
     });
   });
 
-  describe("#delete( key )", function() {
+  describe("#delete(key)", function() {
     it("should delete existing key", function() {
       a.set("delete", "value");
       assert.equal(a.has("delete"), true);

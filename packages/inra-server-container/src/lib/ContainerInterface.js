@@ -1,6 +1,6 @@
 export interface ContainerInterface {
   /**
-   * Returns the number of key/value pairs in the Map object.
+   * Return the number of key/value pairs in the Map object.
    *
    * @type    {number}
    * @readonly
@@ -8,8 +8,7 @@ export interface ContainerInterface {
   +size: number;
 
   /**
-   * Sets the value for the key in the Container object. Returns the Map
-   * object.
+   * Set value for a given `key` in the Container object.
    *
    * @param   {string}    key
    * @param   {any}       value
@@ -18,7 +17,7 @@ export interface ContainerInterface {
   set(key: string, value: any): Map<string, any>;
 
   /**
-   * Returns the value associated to the key, or `defaultValue` if there is
+   * Return value associated to the given `key`, or `defaultValue` if there is
    * none.
    *
    * @param   {string}    key
@@ -28,8 +27,8 @@ export interface ContainerInterface {
   get(key: string, defaultValue: any): any;
 
   /**
-   * Returns a boolean asserting whether a value has been associated to the
-   * key in the Container object or not.
+   * Return a boolean asserting whether a value has been associated to the given
+   * `key` in the Container object or not.
    *
    * @param   {string}    key
    * @return  {bool}
@@ -37,7 +36,7 @@ export interface ContainerInterface {
   has(key: string): boolean;
 
   /**
-   * Removes any value associated to the key and returns `true` if it was
+   * Remove any value associated to the given `key` and return `true` if it was
    * deleted successfully, or `false` otherwise.
    *
    * @param   {string}    key
@@ -46,7 +45,7 @@ export interface ContainerInterface {
   delete(key: string): boolean;
 
   /**
-   * Removes all key/value pairs from the Map object.
+   * Remove all key/value pairs from the Map object.
    *
    * @return {void}
    */
