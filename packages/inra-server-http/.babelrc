@@ -1,0 +1,14 @@
+{
+  "presets": [
+    "flow",
+    [
+      "env",
+      {
+        "targets": {
+          "node": "8.0.0"
+        }
+      }
+    ]
+  ],
+  "plugins": ["dev-expression", "add-module-exports", "transform-class-properties"]
+}

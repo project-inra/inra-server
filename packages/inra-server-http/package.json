@@ -1,0 +1,41 @@
+{
+  "name": "inra-server-http",
+  "version": "1.0.0",
+  "description": "",
+  "license": "MIT",
+  "author": "Bartosz Łaniewski <laniewski.bartozzz@gmail.com>",
+  "main": "dest/index.js",
+  "homepage": "https://github.com/ProjectInra/inra-server",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ProjectInra/inra-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ProjectInra/inra-server/issues"
+  },
+  "scripts": {
+    "clean": "rm -rf ./dest",
+    "build": "./node_modules/.bin/babel ./src -d ./dest",
+    "watch": "./node_modules/.bin/babel ./src -d ./dest --watch",
+    "lint": "./node_modules/.bin/eslint src",
+    "flow": "flow check --all",
+    "test": "npm run flow && ./node_modules/mocha/bin/mocha",
+    "prepare": "npm run clean && npm run lint && npm run build"
+  },
+  "dependencies": {
+    "inra-server-container": "latest"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.1",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-dev-expression": "^0.2.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-env": "latest",
+    "babel-preset-flow": "^6.23.0",
+    "eslint": "^4.15.0",
+    "eslint-plugin-import": "^2.8.0",
+    "flow-bin": "^0.63.1",
+    "mocha": "^4.1.0"
+  }
+}
