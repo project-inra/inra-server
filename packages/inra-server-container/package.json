@@ -1,6 +1,6 @@
 {
   "name": "inra-server-container",
-  "version": "1.0.1-0",
+  "version": "1.1.0",
   "description": "Container is a component that implements Service Location of services and it's itself a container for them.",
   "license": "MIT",
   "author": "Bartosz Łaniewski <laniewski.bartozzz@gmail.com>",
@@ -24,14 +24,15 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-eslint": "^7.2.3",
+    "babel-eslint": "^8.2.1",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-dev-expression": "^0.2.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "latest",
     "babel-preset-flow": "^6.23.0",
     "eslint": "^4.15.0",
     "eslint-plugin-import": "^2.8.0",
-    "flow-bin": "^0.53.1",
-    "mocha": "^3.5.3"
+    "flow-bin": "^0.63.1",
+    "mocha": "^4.1.0"
   }
 }
