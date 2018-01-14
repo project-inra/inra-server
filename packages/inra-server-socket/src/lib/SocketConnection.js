@@ -1,3 +1,5 @@
+// @flow
+
 import {EmittableInterface} from "./interfaces/EmittableInterface";
 
 class SocketConnection implements EmittableInterface {

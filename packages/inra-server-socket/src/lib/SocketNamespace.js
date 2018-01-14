@@ -1,3 +1,5 @@
+// @flow
+
 import EventEmitter from "events";
 import {EmittableInterface} from "./interfaces/EmittableInterface";
 

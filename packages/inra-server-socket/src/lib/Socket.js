@@ -1,3 +1,5 @@
+// @flow
+
 import io from "socket.io";
 import SocketNamespace from "./SocketNamespace";
 import SocketConnection from "./SocketConnection";

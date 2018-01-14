@@ -1,3 +1,5 @@
+// @flow
+
 export interface EmittableInterface {
   /**
    * Executes `callback` on `event` from the actual socket.
