@@ -1,3 +1,5 @@
+// @flow
+
 export interface ContainerInterface {
   /**
    * Return the number of key/value pairs in the Map object.

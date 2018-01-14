@@ -1,3 +1,5 @@
+// @flow
+
 import {ContainerInterface} from "./ContainerInterface";
 
 /**
@@ -18,7 +20,7 @@ import {ContainerInterface} from "./ContainerInterface";
  * @see https://en.wikipedia.org/wiki/Inversion_of_control
  */
 
-class Container extends Map implements ContainerInterface {
+class Container extends Map<any, any> implements ContainerInterface {
   get(key: string, defaultValue: any): any {
     return super.get(key) || defaultValue;
   }

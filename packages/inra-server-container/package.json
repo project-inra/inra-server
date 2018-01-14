@@ -4,7 +4,7 @@
   "description": "Container is a component that implements Service Location of services and it's itself a container for them.",
   "license": "MIT",
   "author": "Bartosz Łaniewski <laniewski.bartozzz@gmail.com>",
-  "main": "dist/index.js",
+  "main": "dest/index.js",
   "homepage": "https://github.com/ProjectInra/inra-server",
   "repository": {
     "type": "git",

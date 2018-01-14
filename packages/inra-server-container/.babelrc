@@ -10,5 +10,5 @@
       }
     ]
   ],
-  "plugins": ["dev-expression", "add-module-exports"]
+  "plugins": ["dev-expression", "add-module-exports", "transform-class-properties"]
 }
