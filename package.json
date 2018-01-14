@@ -13,7 +13,7 @@
     "url": "https://github.com/ProjectInra/inra-server/issues"
   },
   "devDependencies": {
-    "babel-eslint": "^7.2.3",
+    "babel-eslint": "^8.1.1",
     "eslint": "^4.15.0",
     "eslint-config-google": "^0.9.1",
     "eslint-plugin-flowtype": "^2.41.0",
