@@ -8,32 +8,94 @@ var _inraServerContainer = require("inra-server-container");
 
 var _inraServerContainer2 = _interopRequireDefault(_inraServerContainer);
 
-var _Middleware = require("./Middleware");
-
 var _Router = require("./Router");
+
+var _Middleware = require("./Middleware");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
  * Wrapper for common Node.js frameworks. Creates micro applications which are
  * suitable for small applications that will have very low overhead. Such apps
- * are for instance websites, documentations, APIs, prototypes etc.
+ * are for instance websites, documentations, APIs, prototypes etc. It creates
+ * a HTTP(S) server on a given port, populates it with specified resources.
  *
- * It creates a HTTP(S) server on a given port, populates it with specified
- * resources (routes, middlewares, …). This class aims to be a better, more
- * expressive, and more robust foundation for web applications and APIs.
+ * This class aims to be a better, more expressive, and more robust foundation
+ * for web applications and APIs.
+ *
+ * Each App instance is a Proxy which defines custom behaviors for fundamental
+ * operations such as "magic" setters and getters:
+ *  • Setters are used to prevent developers from overriding server internals.
+ *    Additionally, custom-defined properties will be added to an internal Map
+ *    object which serves as Service Location of services and it's itself a
+ *    container for them.
+ *  • Getters retrieve those properties from the Map by key, if such key doesn't
+ *    exist in server instance.
  */
 
 class App {
 
   /**
-   * Return Proxy which defines custom global getters and setters for App class.
-   * It allows us to reflect all custom properties to dependency injector which
-   * keeps fundamental object safe and immutable. Gives another layer of
-   * abstraction for data.
+   * Returns a Proxy instance which defines magic global getters and setters for
+   * Server class. It allows us to reflect all custom properties to a dependency
+   * injector which keeps fundamental object safe and immutable. Gives another
+   * layer of abstraction for data.
    *
-   * @param   {ConfigInterface}   config
-   * @return  {Proxy<App>}
+   * @param  {ConfigInterface}   config
+   * @return {Proxy<App>}
+   */
+
+
+  /**
+   * User-defined handlers for resources imported by `.import`. Object keys must
+   * match resource name (ex. `Resource` will match `UserDefinedResource`). Once
+   * matched, the resource is handled by corresponding handler.
+   *
+   * @type   {Object}
+   * @access private
+   * @readonly
+   */
+  constructor(config) {
+    this.config = {
+      port: 8000
+    };
+    this.middlewares = {};
+    this.handlers = {};
+    this.di = new _inraServerContainer2.default();
+
+    this.config = config;
+
+    return new Proxy(this, {
+      set(target, key, value) {
+        target.di[key] = value;
+
+        // Indicate success:
+        return true;
+      },
+
+      get(target, key) {
+        return target[key] || target.di[key];
+      }
+    });
+  }
+
+  /**
+   * Sets engine for our server. Each engine must implement methods described in
+   * `EngineInterface`.
+   *
+   * @param  {EngineInterface}   engine
+   * @return {this}
+   * @access public
+   */
+
+
+  /**
+   * Container used as a linked list for storing custom application data such as
+   * models, configurations etc.
+   *
+   * @type   {Container}
+   * @access public
+   * @readonly
    */
 
 
@@ -45,43 +107,50 @@ class App {
    * 3. `async handle(ctx, next, ...rest);`
    * 4. `async after(ctx, next, ...rest);`
    *
-   * @type    {Object}
-   * @access  public
+   * @type   {Object}
+   * @access public
    * @readonly
    */
-  constructor(config) {
-    this.di = new _inraServerContainer2.default();
+  setEngine(engine) {
+    if (this.engine) {
+      throw new Error("Cannot override engine");
+    }
 
-    this.config = config;
+    this.engine = engine;
 
-    return new Proxy(this, {
-      set(target, prop, value) {
-        target.di[prop] = value;
-        return true;
-      },
-
-      get(target, prop) {
-        return target[prop] || target.di[prop];
-      }
-    });
+    return this;
   }
 
   /**
-   * Container used as a linked list for storing custom application data such as
-   * models, configurations etc.
+   * Sets router for our server. Each router must implement methods described in
+   * RouterInterface.
    *
-   * @type    {Container}
-   * @access  public
-   * @readonly
+   * @param  {RouterInterface}   router
+   * @return {this}
+   * @access public
    */
+  setRouter(router) {
+    if (this.router) {
+      throw new Error("Cannot override router");
+    }
 
+    this.router = router;
 
-  setEngine(engine) {
-    this.engine = engine;
+    return this;
   }
 
-  setRouter(router) {
-    this.router = router;
+  /**
+   * Adds a handler for our server. A handler is describes by its name which is
+   * used to identify specific kind of files and a callback which handles those
+   * files.
+   *
+   * @param  {string}     name
+   * @param  {Function}   handler
+   * @return {void}
+   * @access public
+   */
+  addHandler(name, handler) {
+    this.handlers[name] = handler;
   }
 
   /**
@@ -90,47 +159,53 @@ class App {
    * a `*Middleware` will be interpreted as a middleware and a `*Router` will be
    * interpreted as a router.
    *
-   * @param   {string}    path  Path to the resource
-   * @return  {Function}        Initialised resource
-   * @return  {any}
+   * @param  {string}    path  Path to the resource
+   * @return {any}
    */
   import(path) {
-    const object = require(path);
+    try {
+      const object = require(path);
 
-    if (object.name.includes("Middleware")) {
-      return this._handleMiddleware(object);
+      for (const name in this.handlers) {
+        if (object.name.includes(name)) {
+          return this.handlers[name](object, this);
+        }
+      }
+
+      if (this.handlers.default) {
+        return this.handlers.default(object, this);
+      }
+
+      throw new Error(`No handler defined for "${object.name}"`);
+    } catch (error) {
+      throw new Error(`Could not load file "${path}"`);
     }
-
-    if (object.name.includes("Router")) {
-      return this._handleRouter(object);
-    }
-
-    throw new Error(`No handler defined for ${object.name}`);
   }
 
-  _handleMiddleware(object) {
-    const resource = (0, _Middleware.handleMiddleware)(object, this);
-
-    // Save middleware callback for further usage:
-    this.middlewares[resource.name] = resource.func;
-
-    return resource;
-  }
-
-  _handleRouter(object) {
-    if (!this.router) {
-      throw new Error("Router engine not specified");
+  /**
+   * Mounts the specified middleware function or functions.
+   *
+   * @param  {Function}  middleware
+   * @return {this}
+   * @access public
+   */
+  use(middleware) {
+    if (!this.engine) {
+      throw new Error("Server engine not specified");
     }
 
-    (0, _Router.handleRouter)(object, this);
+    this.engine.use(middleware);
+
+    return this;
   }
 
   /**
    * Listens on a given port.
    *
-   * @param   {number}    port
-   * @param   {Function}  callback
-   * @return  {void}
+   * @param  {number}    port
+   * @param  {Function}  callback
+   * @return {void}
+   * @access public
    */
   run(port = this.config.port, callback) {
     if (!this.engine) {
@@ -138,6 +213,56 @@ class App {
     }
 
     this.engine.listen(port, callback);
+
+    return this;
+  }
+
+  /**
+   * Basic handler for middlewares.
+   *
+   * @param  {Class<MiddlewareInterface>}   Item      Middleware class
+   * @param  {App}                          server    Server instance
+   * @return {Object}
+   * @access public
+   * @static
+   */
+  static middlewareHandler(Item, server) {
+    const resource = (0, _Middleware.handleMiddleware)(Item, server);
+
+    // Save middleware callback for further usage:
+    server.middlewares[resource.name] = resource.func;
+
+    return resource.func;
+  }
+
+  /**
+   * Basic handler for routes.
+   *
+   * @param  {Class<RouterInterface>}   Item      Router class
+   * @param  {App}                      server    Server instance
+   * @return {void}
+   * @access public
+   * @static
+   */
+  static routerHandler(Item, server) {
+    if (!server.router) {
+      throw new Error("Router engine not specified");
+    }
+
+    (0, _Router.handleRouter)(Item, server);
+  }
+
+  /**
+   * Basic handler for other files.
+   *
+   * @param  {Class<*>}   Item      Class to handle
+   * @param  {App}        server    Server instance
+   * @return {any}
+   * @access public
+   * @static
+   */
+  static defaultHandler(Item, server) {
+    return new Item(server);
   }
 }
 exports.default = App;

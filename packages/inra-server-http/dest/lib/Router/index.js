@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.route = route;
-exports.parseArguments = parseArguments;
+exports.prepareArguments = prepareArguments;
 exports.handleRouter = handleRouter;
 
 
@@ -17,29 +17,29 @@ const prefix = "__route_";
 const verbs = ["all", "get", "put", "del", "post", "head", "patch", "delete", "options"];
 
 /**
- * Route decorator:
+ * Route decorators:
  *
  * @example
- *    @route(method, path, ...middleware)
- *    @all(path, ...middleware)
- *    @get(path, ...middleware)
- *    @put(path, ...middleware)
- *    @del(path, ...middleware)
- *    @post(path, ...middleware)
- *    @head(path, ...middleware)
- *    @patch(path, ...middleware)
- *    @delete(path, ...middleware)
- *    @options(path, ...middleware)
+ *    @route(method, path, app => compose(...middlewares))
+ *    @all(path, app => compose(...middlewares))
+ *    @get(path, app => compose(...middlewares))
+ *    @put(path, app => compose(...middlewares))
+ *    @del(path, app => compose(...middlewares))
+ *    @post(path, app => compose(...middlewares))
+ *    @head(path, app => compose(...middlewares))
+ *    @patch(path, app => compose(...middlewares))
+ *    @delete(path, app => compose(...middlewares))
+ *    @options(path, app => compose(...middlewares))
  *
  * @param   {string}      verb
  * @param   {Array<any>}  args
  * @return  {Function}
  */
 function route(verb, ...args) {
-  const [url, middleware] = parseArguments(args);
+  const [path, middlewares] = prepareArguments(args);
 
   return function (target, name) {
-    target[`${prefix}${name}`] = { verb, url, middleware };
+    target[`${prefix}${name}`] = { verb, path, middlewares };
   };
 }
 
@@ -55,7 +55,7 @@ verbs.forEach(verb => {
  * @param   {Array<any>}  args
  * @return  {Array<any>}
  */
-function parseArguments(args) {
+function prepareArguments(args) {
   const hasPath = typeof args[0] === "string";
   const path = hasPath ? args[0] : "";
   const mids = hasPath ? args.slice(1) : args;
@@ -78,9 +78,13 @@ function handleRouter(Route, server) {
   const Router = new Route(server);
 
   Object.getOwnPropertyNames(Route.prototype).filter(prop => prop.indexOf(prefix) === 0).map(prop => {
-    const { verb, url, middleware } = Route.prototype[prop];
-    const func = prop.substring(prefix.length);
+    const { verb, path, middlewares } = Route.prototype[prop];
+    const methodName = prop.substring(prefix.length);
+    const methodFunc = Router[methodName].bind(Router);
+    const middleware = middlewares.bind(server.middlewares);
 
-    server.router[verb](url, ...middleware, Router[func].bind(Router));
+    // @example router.get("/", middleware, callback);
+    // @example router.post("/", middleware, callback);
+    server.router[verb](path, middleware(server), methodFunc);
   });
 }

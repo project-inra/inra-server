@@ -19,8 +19,9 @@ function handleName(name) {
 }
 
 /**
- * Create a universal middleware which adapts to all major Node.js frameworks
- * such as Koa/Express. Middleware methods are executed asynchronously in order:
+ * Creates a universal middleware which adapts to all popular Node.js frameworks
+ * such as Koa.js/Express.js. Middleware methods are executed asynchronously in
+ * order below:
  *
  * • For Koa:
  *    1. `async create(application);`
@@ -34,36 +35,9 @@ function handleName(name) {
  *    3. `async handle(req, res, ...rest);`
  *    4. `async after(req, res, ...rest);`
  *
- * @example Defining a middleware
- *  class AclMiddleware {
- *    constructor(app) {
- *      this.models = app.models;
- *    }
- *
- *    async before(ctx) {
- *      if (!ctx.state.user) {
- *        ctx.throw(401, "Not allowed");
- *      }
- *    }
- *
- *    async handle(ctx, next, permissions) {
- *      if (ctx.state.user.hasPermissions(permissions) {
- *        return next();
- *      }
- *    }
- *  }
- *
- * @example Importing a middleware
- *  const hasPermission = app.import("./AclMiddleware");
- *  const {Acl} = app.middlewares;
- *  // hasPermission === AclMiddleware
- *
- *  router.delete("/user", hasPermission(["isAdmin"]), …);
- *  router.delete("/post", hasPermission(["isModerator"]), …);
- *
- * @param   {Object}    instance    Middleware instance
- * @param   {Object}    server      Server instance
- * @return  {Function}
+ * @param  {Object}   instance    Middleware instance
+ * @param  {Object}   server      Server instance
+ * @return {Function}
  */
 
 
