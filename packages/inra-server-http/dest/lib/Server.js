@@ -266,4 +266,3 @@ class App {
   }
 }
 exports.default = App;
-module.exports = exports["default"];

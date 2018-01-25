@@ -49,10 +49,10 @@ const verbs: Array<string> = [
  * @return  {Function}
  */
 export function route(verb: string, ...args: Array<any>): Function {
-  const [path, middlewares] = prepareArguments(args);
+  const [path, middleware] = prepareArguments(args);
 
   return function(target: Object, name: string) {
-    target[`${prefix}${name}`] = {verb, path, middlewares};
+    target[`${prefix}${name}`] = {verb, path, middleware};
   };
 }
 
@@ -69,15 +69,10 @@ verbs.forEach((verb) => {
  * @return  {Array<any>}
  */
 export function prepareArguments(args: Array<any>): Array<any> {
-  const hasPath = typeof args[0] === "string";
-  const path = hasPath ? args[0] : "";
-  const mids = hasPath ? args.slice(1) : args;
+  const path = typeof args[0] === "string" ? args[0] : "";
+  const midd = typeof args[1] === "function" ? args[1] : null;
 
-  if (mids.some((middleware) => typeof middleware !== "function")) {
-    throw new Error("Middleware must be function");
-  }
-
-  return [path, mids];
+  return [path, midd];
 }
 
 /**
@@ -93,13 +88,17 @@ export function handleRouter(Route: Class<any>, server: Object): void {
   Object.getOwnPropertyNames(Route.prototype)
     .filter((prop) => prop.indexOf(prefix) === 0)
     .map((prop) => {
-      const {verb, path, middlewares} = Route.prototype[prop];
+      const {verb, path, middleware} = Route.prototype[prop];
       const methodName = prop.substring(prefix.length);
       const methodFunc = Router[methodName].bind(Router);
-      const middleware = middlewares.bind(server.middlewares);
 
-      // @example router.get("/", middleware, callback);
-      // @example router.post("/", middleware, callback);
-      server.router[verb](path, middleware(server), methodFunc);
+      // @example router.get("/"[, middleware], callback);
+      // @example router.post("/"[, middleware], callback);
+      if (middleware) {
+        const composer = middleware.bind(server.middlewares);
+        server.router[verb](path, composer(server), methodFunc);
+      } else {
+        server.router[verb](path, methodFunc);
+      }
     });
 }

@@ -23,4 +23,3 @@ var _Server2 = _interopRequireDefault(_Server);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = _Server2.default;
-module.exports = exports["default"];
