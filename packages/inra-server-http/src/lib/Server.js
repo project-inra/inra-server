@@ -159,25 +159,21 @@ export default class App {
    * @return {any}
    */
   import(path: string): any {
-    try {
-      const object: {
-        name: string,
-      } = require(path);
+    const object: {
+      name: string,
+    } = require(path);
 
-      for (const name in this.handlers) {
-        if (object.name.includes(name)) {
-          return this.handlers[name](object, this);
-        }
+    for (const name in this.handlers) {
+      if (object.name.includes(name)) {
+        return this.handlers[name](object, this);
       }
-
-      if (this.handlers.default) {
-        return this.handlers.default(object, this);
-      }
-
-      throw new Error(`No handler defined for "${object.name}"`);
-    } catch (error) {
-      throw new Error(`Could not load file "${path}"`);
     }
+
+    if (this.handlers.default) {
+      return this.handlers.default(object, this);
+    }
+
+    throw new Error(`No handler defined for "${object.name}"`);
   }
 
   /**
