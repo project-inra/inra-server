@@ -163,23 +163,19 @@ class App {
    * @return {any}
    */
   import(path) {
-    try {
-      const object = require(path);
+    const object = require(path);
 
-      for (const name in this.handlers) {
-        if (object.name.includes(name)) {
-          return this.handlers[name](object, this);
-        }
+    for (const name in this.handlers) {
+      if (object.name.includes(name)) {
+        return this.handlers[name](object, this);
       }
-
-      if (this.handlers.default) {
-        return this.handlers.default(object, this);
-      }
-
-      throw new Error(`No handler defined for "${object.name}"`);
-    } catch (error) {
-      throw new Error(`Could not load file "${path}"`);
     }
+
+    if (this.handlers.default) {
+      return this.handlers.default(object, this);
+    }
+
+    throw new Error(`No handler defined for "${object.name}"`);
   }
 
   /**
@@ -204,7 +200,7 @@ class App {
    *
    * @param  {number}    port
    * @param  {Function}  callback
-   * @return {void}
+   * @return {this}
    * @access public
    */
   run(port = this.config.port, callback) {
