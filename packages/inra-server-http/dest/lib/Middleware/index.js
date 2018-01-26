@@ -47,9 +47,9 @@ function handleCallback(instance, server) {
     // @note in Express : a = req, b = res
 
     if (instance.create) await instance.create(server);
-    if (instance.before) await instance.before(...params, a, b);
-    if (instance.handle) await instance.handle(...params, a, b);
-    if (instance.after) await instance.after(...params, a, b);
+    if (instance.before) await instance.before(a, b, ...params);
+    if (instance.handle) await instance.handle(a, b, ...params);
+    if (instance.after) await instance.after(a, b, ...params);
   };
 }
 
