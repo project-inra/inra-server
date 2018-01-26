@@ -46,12 +46,11 @@ export function handleCallback(
   return (...params) => async (a, b) => {
     // @note in Koa     : a = ctx, b = next
     // @note in Express : a = req, b = res
-    params.unshift(a, b);
 
     if (instance.create) await instance.create(server);
-    if (instance.before) await instance.before(...params);
-    if (instance.handle) await instance.handle(...params);
-    if (instance.after) await instance.after(...params);
+    if (instance.before) await instance.before(...params, a, b);
+    if (instance.handle) await instance.handle(...params, a, b);
+    if (instance.after) await instance.after(...params, a, b);
   };
 }
 
