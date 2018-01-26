@@ -202,7 +202,7 @@ export default class App {
    *
    * @param  {number}    port
    * @param  {Function}  callback
-   * @return {void}
+   * @return {this}
    * @access public
    */
   run(port: number = this.config.port, callback: Function): this {
