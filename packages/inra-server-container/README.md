@@ -4,18 +4,12 @@ The container is a component that implements Service Location of services and it
 
 Basically, this component implements the ["Inversion of Control"](https://en.wikipedia.org/wiki/Inversion_of_control) pattern: the objects do not receive their dependencies using setters or constructors, but requesting something similar to "service dependency injector". This reduces the overall complexity since there is only one way to get the required dependencies within a component. Additionally, this pattern increases testability in the code, thus making it less prone to errors.
 
-## Installation
+>**Note**: documentation and examples are published on our [Wiki](https://github.com/project-inra/inra-server/wiki).
 
-Using [npm](https://www.npmjs.com/):
+## Installation
 
 ```bash
 $ npm install --save inra-server-container
-```
-
-Then with a module bundler like [webpack](https://webpack.github.io/), use as you would anything else:
-
-```js
-import Container from "inra-server-container";
 ```
 
 ## API
@@ -55,10 +49,6 @@ Returns the number of key/value pairs in the Map object.
 [![Github Pull Requests](https://img.shields.io/github/issues-pr-raw/project-inra/inra-server.svg)](https://github.com/project-inra/inra-server/pulls)
 
 **We want contributing to Inra Server to be fun, enjoyable, and educational for anyone, and everyone.** Changes and improvements are more than welcome! Feel free to fork and open a pull request. If you have found any issues, please [report them here](https://github.com/project-inra/inra-server/issues/new) - they are being tracked on [GitHub Issues](https://github.com/project-inra/inra-server/issues).
-
-### License
-
-Inra Server is built and maintained by [Bartosz Łaniewski](https://github.com/Bartozzz). The full list of contributors can be found [here](https://github.com/project-inra/inra-server/graphs/contributors). Inra's code is [MIT licensed](https://github.com/project-inra/inra-server/blob/master/LICENSE).
 
 ### Development
 
