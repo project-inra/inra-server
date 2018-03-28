@@ -248,17 +248,4 @@ export default class App {
 
     handleRouter(Item, server);
   }
-
-  /**
-   * Basic handler for other files.
-   *
-   * @param  {Class<*>}   Item      Class to handle
-   * @param  {App}        server    Server instance
-   * @return {any}
-   * @access public
-   * @static
-   */
-  static defaultHandler(Item: Class<*>, server: App): boolean {
-    return new Item(server);
-  }
 }
