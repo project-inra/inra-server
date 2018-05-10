@@ -1,5 +1,5 @@
-let assert = require("assert");
-let Container = require("../dest");
+import assert from "assert";
+import Container from "../dest";
 
 describe("inra-server-container", function() {
   let a = new Container();
