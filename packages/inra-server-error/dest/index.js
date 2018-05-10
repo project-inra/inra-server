@@ -17,6 +17,8 @@ const handlers = exports.handlers = new Map();
  * @param   {Object}    options
  * @return  {Function}
  */
+
+
 function errors(options) {
   // Default options:
   const opts = _extends({
@@ -35,11 +37,15 @@ function errors(options) {
             status: defaults.httpStatus,
             errorCode: defaults.errorCode,
             userMessage: defaults.userMessage,
-            developerMessage: null
+            developerMessage: err.message
           };
 
-          if (process.env.NODE_ENV !== "production") {
-            response.developerMessage = err.message;
+          if (typeof defaults.callback === "function") {
+            defaults.callback(response);
+          }
+
+          if (process.env.NODE_ENV === "production") {
+            response.developerMessage = null;
           }
 
           ctx.response.type = "json";

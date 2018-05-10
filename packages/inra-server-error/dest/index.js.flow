@@ -1,5 +1,12 @@
 // @flow
 
+export type ResponseFormat = {
+  status: number;
+  errorCode: number;
+  userMessage: string;
+  developerMessage: string|null;
+}
+
 export type HandlerInstance = {
   message: string,
   errorCode?: string | number,
@@ -9,7 +16,7 @@ export type HandlerInstance = {
 
 export type HandlerDefinition = {
   instance: HandlerInstance,
-  callback?: (HandlerInstance) => any,
+  callback?: (ResponseFormat) => any,
   errorCode?: string | number,
   httpStatus?: number,
   userMessage?: string,
@@ -39,15 +46,19 @@ export default function errors(options?: Object): Function {
       handlers.forEach((def, instance) => {
         if (err instanceof instance) {
           const defaults = {...opts, ...err, ...def};
-          const response = {
+          const response: ResponseFormat = {
             status: defaults.httpStatus,
             errorCode: defaults.errorCode,
             userMessage: defaults.userMessage,
-            developerMessage: null,
+            developerMessage: err.message,
           };
 
-          if (process.env.NODE_ENV !== "production") {
-            response.developerMessage = err.message;
+          if (typeof defaults.callback === "function") {
+            defaults.callback(response);
+          }
+
+          if (process.env.NODE_ENV === "production") {
+            response.developerMessage = null;
           }
 
           ctx.response.type = "json";

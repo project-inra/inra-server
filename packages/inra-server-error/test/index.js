@@ -29,6 +29,12 @@ describe("inra-server-container", function() {
     userMessage = "Message for users";
   }
 
+  class CallbackError extends Error {
+    errorCode = 7891;
+    httpStatus = 405;
+    userMessage = "Message for users";
+  }
+
   describe("#defineError(data)", function() {
     it("should define new error", function() {
       defineError({
@@ -115,6 +121,35 @@ describe("inra-server-container", function() {
         server.close();
         done();
       });
+    });
+
+    it("should execute callback on error", function(done) {
+      const app = new Koa();
+      const server = app.listen(3000);
+
+      defineError({
+        instance: CallbackError,
+        callback(error) {
+          expect(error.status).to.be.equal(405);
+          expect(error.errorCode).to.be.equal(7891);
+          expect(error.userMessage).to.be.equal("Message for users");
+          expect(error.developerMessage).to.be.equal("Some custom message");
+
+          server.close();
+          done();
+        }
+      });
+
+      app.use(errors());
+      app.use(async ctx => {
+        await service();
+      });
+
+      function service() {
+        throw new CallbackError("Some custom message")
+      }
+
+      request(server).get("/").end();
     });
   });
 });
