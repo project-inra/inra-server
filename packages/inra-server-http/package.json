@@ -19,7 +19,7 @@
     "watch": "babel ./src -d ./dest --watch",
     "defs": "babel-node ./bin/defs.js",
     "flow": "flow",
-    "test": "npm run flow && mocha",
+    "test": "npm run flow && mocha --require babel-core/register",
     "prepare": "npm run clean && npm run build"
   },
   "dependencies": {
