@@ -1,28 +1,32 @@
 // @flow
+import type {Context} from "koa";
 
-export type ResponseFormat = {
+// JSON format:
+export type Response = {
   status: number;
   errorCode: number;
   userMessage: string;
   developerMessage: string|null;
 }
 
-export type HandlerInstance = {
-  message: string,
-  errorCode?: string | number,
-  httpStatus?: number,
-  userMessage?: string,
+// Exception class definition:
+export interface Exception {
+  message?: string;
+  errorCode?: string | number;
+  httpStatus?: number;
+  userMessage?: string;
+  callback?: (Response) => any;
 };
 
-export type HandlerDefinition = {
-  instance: HandlerInstance,
-  callback?: (ResponseFormat) => any,
-  errorCode?: string | number,
-  httpStatus?: number,
-  userMessage?: string,
+export type ErrorHandler = {
+  instance: Exception;
+  errorCode?: string | number;
+  httpStatus?: number;
+  userMessage?: string;
+  callback?: (Response) => any;
 };
 
-export const handlers: Map<HandlerInstance, HandlerDefinition> = new Map();
+export const handlers: Map<Exception, ErrorHandler> = new Map();
 
 /**
  * Errors middleware which catches exceptions thrown inside other middlewares or
@@ -39,14 +43,17 @@ export default function errors(options?: Object): Function {
     ...options,
   };
 
-  return async function middleware(ctx: Object, next: Function): Promise<void> {
+  return async function middleware(
+    ctx: Context,
+    next: () => Promise<void>
+  ): Promise<void> {
     try {
       await next();
     } catch (err) {
       handlers.forEach((def, instance) => {
         if (err instanceof instance) {
           const defaults = {...opts, ...err, ...def};
-          const response: ResponseFormat = {
+          const response: Response = {
             status: defaults.httpStatus,
             errorCode: defaults.errorCode,
             userMessage: defaults.userMessage,
@@ -81,15 +88,18 @@ export default function errors(options?: Object): Function {
  * @example
  *  defineError({
  *    instance: EmptyFieldError,
+ *
  *    errorCode: Errors.VALIDATION_ERROR,
  *    httpStatus: 400,
- *    userMessage: "Field is required"
+ *    userMessage: "Field is required",
+ *
+ *    callback(error) {}
  *  });
  *
- * @param   {HandlerDefinition}  data
+ * @param   {ErrorHandler}  data
  * @return  {void}
  */
-export function defineError(data: HandlerDefinition): void {
+export function defineError(data: ErrorHandler): void {
   if (!data.instance) {
     throw new Error("Error instance must extend Error class");
   }

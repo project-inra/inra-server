@@ -8,6 +8,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 exports.default = errors;
 exports.defineError = defineError;
+
+
+// JSON format:
+;
+
+// Exception class definition:
+
 const handlers = exports.handlers = new Map();
 
 /**
@@ -17,8 +24,6 @@ const handlers = exports.handlers = new Map();
  * @param   {Object}    options
  * @return  {Function}
  */
-
-
 function errors(options) {
   // Default options:
   const opts = _extends({
@@ -68,12 +73,15 @@ function errors(options) {
  * @example
  *  defineError({
  *    instance: EmptyFieldError,
+ *
  *    errorCode: Errors.VALIDATION_ERROR,
  *    httpStatus: 400,
- *    userMessage: "Field is required"
+ *    userMessage: "Field is required",
+ *
+ *    callback(error) {}
  *  });
  *
- * @param   {HandlerDefinition}  data
+ * @param   {ErrorHandler}  data
  * @return  {void}
  */
 function defineError(data) {
