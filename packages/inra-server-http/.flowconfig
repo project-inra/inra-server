@@ -1,7 +1,4 @@
 [ignore]
-.*/dest/.*
-.*/test/.*
-.*/node_modules/.*
 
 [include]
 

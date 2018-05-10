@@ -151,17 +151,27 @@ export default class App {
 
   /**
    * Imports, initialises and saves a given resource. Each resource is handled
-   * by it individual handler. Resources are recognized based on their name, so
-   * a `*Middleware` will be interpreted as a middleware and a `*Router` will be
-   * interpreted as a router.
+   * by it individual handler. Resources are recognized based on their name (1),
+   * so a `*Middleware` will be interpreted as a middleware and a `*Router` will
+   * be interpreted as a router.
+   *
+   *  (1) We are reading:
+   *      - "object.constructor.name" when dealing with a Class;
+   *      - "Function.name" when dealing with a Function;
    *
    * @param  {string}    path  Path to the resource
    * @return {any}
    */
   import(path: string): any {
-    const object: {
-      name: string,
-    } = require(path);
+    let object = require(path);
+
+    // When not using Babel's "babel-plugin-add-module-exports" plugin, name
+    // can be "undefined" as it is no available on native Objects:
+    if (!("name" in object) || typeof object.name !== "string") {
+      // Probably an ES6+ module at this point:
+      if ("default" in object) object = object.default;
+      if (!("name" in object)) return this.handlers.default(object, this);
+    }
 
     for (const name in this.handlers) {
       if (object.name.includes(name)) {
