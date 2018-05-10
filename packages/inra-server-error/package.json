@@ -15,8 +15,9 @@
   },
   "scripts": {
     "clean": "rm -rf ./dest",
-    "build": "babel ./src -d ./dest",
+    "build": "babel ./src -d ./dest && npm run defs",
     "watch": "babel ./src -d ./dest --watch",
+    "defs": "babel-node ./bin/defs.js",
     "flow": "flow",
     "test": "npm run flow && mocha --require babel-core/register",
     "prepare": "npm run clean && npm run build"
@@ -33,6 +34,8 @@
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
     "flow-bin": "^0.72.0",
+    "fs-extra": "^6.0.1",
+    "glob": "^7.1.2",
     "koa": "^2.5.1",
     "mocha": "^5.1.1"
   }
