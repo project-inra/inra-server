@@ -15,10 +15,11 @@
   },
   "scripts": {
     "clean": "rm -rf ./dest",
-    "build": "./node_modules/.bin/babel ./src -d ./dest",
-    "watch": "./node_modules/.bin/babel ./src -d ./dest --watch",
+    "build": "babel ./src -d ./dest && npm run defs",
+    "watch": "babel ./src -d ./dest --watch",
+    "defs": "babel-node ./bin/defs.js",
     "flow": "flow",
-    "test": "npm run flow && ./node_modules/mocha/bin/mocha",
+    "test": "npm run flow && mocha",
     "prepare": "npm run clean && npm run build"
   },
   "dependencies": {
@@ -31,6 +32,8 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-flow": "^6.23.0",
     "flow-bin": "^0.72.0",
+    "fs-extra": "^6.0.1",
+    "glob": "^7.1.2",
     "mocha": "^5.1.1"
   }
 }
