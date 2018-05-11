@@ -10,5 +10,9 @@
       }
     ]
   ],
-  "plugins": ["dev-expression", "transform-class-properties"]
+  "plugins": [
+    "dev-expression",
+    "transform-class-properties",
+    "transform-decorators-legacy"
+  ]
 }

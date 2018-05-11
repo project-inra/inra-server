@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = undefined;
 
 var _inraServerContainer = require("inra-server-container");
 
@@ -33,7 +34,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *    exist in server instance.
  */
 
-class App {
+let App = class App {
 
   /**
    * Returns a Proxy instance which defines magic global getters and setters for
@@ -220,7 +221,7 @@ class App {
       throw new Error("Server engine not specified");
     }
 
-    this.engine.listen(port, callback);
+    this.conn = this.engine.listen(port, callback);
 
     return this;
   }
@@ -259,5 +260,5 @@ class App {
 
     (0, _Router.handleRouter)(Item, server);
   }
-}
+};
 exports.default = App;

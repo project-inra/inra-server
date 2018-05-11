@@ -32,6 +32,7 @@ export interface EngineInterface {
  */
 
 export default class App {
+  conn: ?Object;
   engine: EngineInterface;
   router: RouterInterface;
   config: ConfigInterface = {
@@ -216,7 +217,7 @@ export default class App {
       throw new Error("Server engine not specified");
     }
 
-    this.engine.listen(port, callback);
+    this.conn = this.engine.listen(port, callback);
 
     return this;
   }
