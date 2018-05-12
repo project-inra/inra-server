@@ -11,7 +11,7 @@ let port = 8085;
 let socket = new SocketServer({host, port});
 
 describe("inra-server-socket", function() {
-  let host, port, socket, client, indexNamespace, adminNamespace;
+  let host, port, socket, client, client2, indexNamespace, adminNamespace;
 
   before(function(done) {
     // Server config:
@@ -25,10 +25,15 @@ describe("inra-server-socket", function() {
 
     // Client:
     client = SocketClient("http://localhost:8080/");
+    client2 = SocketClient("http://localhost:8080/");
 
     client.on("connect", () => {
       done();
     });
+  });
+
+  after(function() {
+    socket.close();
   });
 
   describe("SocketServer", function() {
@@ -78,6 +83,7 @@ describe("inra-server-socket", function() {
           eventE1 = true;
           isDone();
         });
+
         socket.on("eventE", (data) => {
           eventE2 = true;
           isDone();
@@ -90,10 +96,12 @@ describe("inra-server-socket", function() {
     describe("#addConnection( socket, namespace )", function() {
       it("should add client", function() {
         socket.addConnection(client, indexNamespace);
+        socket.addConnection(client2, indexNamespace);
 
-        assert.equal(client.id in socket.connections, true);
-        assert.equal(Object.keys(socket.connections).length === 1, true);
-        assert.equal(typeof socket.connections[client.id] === "object", true);
+        assert.equal(socket.connections.has(client.id), true);
+        assert.equal(socket.connections.has(client2.id), true);
+        assert.equal(typeof socket.connections.get(client.id) === "object", true);
+        assert.equal(typeof socket.connections.get(client2.id) === "object", true);
       });
     });
 
@@ -101,15 +109,13 @@ describe("inra-server-socket", function() {
       it("should remove client", function() {
         socket.removeConnection(client);
 
-        assert.equal(client.id in socket.connections, false);
-        assert.equal(Object.keys(socket.connections).length === 0, true);
-        assert.equal(typeof socket.connections[client.id] === "object", false);
+        assert.equal(socket.connections.has(client.id), false);
       });
     });
 
     describe("#emit( event, callback )", function() {
       it("should send an event for connected clients", function(done) {
-        client.on("emitEvent", () => {
+        client2.on("emitEvent", () => {
           done();
         });
 
@@ -119,7 +125,7 @@ describe("inra-server-socket", function() {
 
     describe("#broadcast( event, callback )", function() {
       it("should send an event for connected clients", function(done) {
-        client.on("broadcastEvent", () => {
+        client2.on("broadcastEvent", () => {
           done();
         });
 

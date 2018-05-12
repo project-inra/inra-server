@@ -30,9 +30,9 @@ class Socket implements EmittableInterface {
   /**
    * Registered connections.
    *
-   * @type    {Object}
+   * @type    {Map}
    */
-  connections: Object = {};
+  connections: Map<string, SocketConnection> = new Map();
 
   /**
    * Creates a new socket server with custom configuration.
@@ -57,8 +57,9 @@ class Socket implements EmittableInterface {
    * @return  {void}
    */
   send(id: string, event: string, data: Object = {}): void {
-    if (id in this.connections) {
-      this.connections[id].emit(event, data);
+    if (this.connections.has(id)) {
+      // $FlowFixMe
+      this.connections.get(id).emit(event, data);
     }
   }
 
@@ -162,7 +163,7 @@ class Socket implements EmittableInterface {
   addConnection(socket: Object, namespace: Object): Object {
     const connection = new SocketConnection(socket, namespace, this);
 
-    this.connections[socket.id] = connection;
+    this.connections.set(socket.id, connection);
 
     return connection;
   }
@@ -174,7 +175,18 @@ class Socket implements EmittableInterface {
    * @return  {void}
    */
   removeConnection(socket: Object): void {
-    delete this.connections[socket.id];
+    if (socket && this.connections.has(socket.id)) {
+      // $FlowFixMe
+      this.connections.get(socket.id).disconnect();
+      this.connections.delete(socket.id);
+    }
+  }
+
+  close() {
+    this.io.close(() => {
+      this.io.server.close();
+      // this.io.httpServer.close();
+    });
   }
 
   get port(): number {

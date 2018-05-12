@@ -46,7 +46,7 @@ class Socket {
     this.io = (0, _socket2.default)();
     this.config = {};
     this.callbacks = {};
-    this.connections = {};
+    this.connections = new Map();
 
     this.config = config;
 
@@ -67,7 +67,7 @@ class Socket {
   /**
    * Registered connections.
    *
-   * @type    {Object}
+   * @type    {Map}
    */
 
 
@@ -77,8 +77,9 @@ class Socket {
    * @type    {Object}
    */
   send(id, event, data = {}) {
-    if (id in this.connections) {
-      this.connections[id].emit(event, data);
+    if (this.connections.has(id)) {
+      // $FlowFixMe
+      this.connections.get(id).emit(event, data);
     }
   }
 
@@ -174,7 +175,7 @@ class Socket {
   addConnection(socket, namespace) {
     const connection = new _SocketConnection2.default(socket, namespace, this);
 
-    this.connections[socket.id] = connection;
+    this.connections.set(socket.id, connection);
 
     return connection;
   }
@@ -186,7 +187,18 @@ class Socket {
    * @return  {void}
    */
   removeConnection(socket) {
-    delete this.connections[socket.id];
+    if (socket && this.connections.has(socket.id)) {
+      // $FlowFixMe
+      this.connections.get(socket.id).disconnect();
+      this.connections.delete(socket.id);
+    }
+  }
+
+  close() {
+    this.io.close(() => {
+      this.io.server.close();
+      // this.io.httpServer.close();
+    });
   }
 
   get port() {

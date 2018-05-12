@@ -15,28 +15,24 @@
   },
   "scripts": {
     "clean": "rm -rf ./dest",
-    "build": "./node_modules/.bin/babel ./src -d ./dest",
-    "watch": "./node_modules/.bin/babel ./src -d ./dest --watch",
-    "lint": "./node_modules/.bin/eslint src",
-    "flow": "flow check --all",
-    "test": "npm run flow && ./node_modules/mocha/bin/mocha",
-    "prepare": "npm run clean && npm run lint && npm run build"
+    "build": "babel ./src -d ./dest",
+    "watch": "babel ./src -d ./dest --watch",
+    "flow": "flow",
+    "test": "npm run flow && mocha --require babel-core/register",
+    "prepare": "npm run clean && npm run build"
   },
   "dependencies": {
-    "socket.io": "^2.0.4"
+    "socket.io": "^2.1.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-eslint": "^8.2.1",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-dev-expression": "^0.2.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-preset-env": "latest",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-flow": "^6.23.0",
-    "eslint": "^4.15.0",
-    "eslint-plugin-import": "^2.8.0",
-    "flow-bin": "^0.63.1",
-    "mocha": "^4.1.0",
-    "socket.io-client": "^2.0.4"
+    "flow-bin": "^0.72.0",
+    "mocha": "^5.1.1",
+    "socket.io-client": "^2.1.0"
   }
 }

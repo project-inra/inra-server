@@ -80,6 +80,11 @@ class SocketConnection implements EmittableInterface {
   broadcast(event: string, data: Object = {}): void {
     this.instance.broadcast.emit(event, data);
   }
+
+  disconnect() {
+    this.instance.disconnect(true);
+    // this.instance.destroy();
+  }
 }
 
 export default SocketConnection;

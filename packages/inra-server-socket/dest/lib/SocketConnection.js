@@ -84,6 +84,11 @@ class SocketConnection {
   broadcast(event, data = {}) {
     this.instance.broadcast.emit(event, data);
   }
+
+  disconnect() {
+    this.instance.disconnect(true);
+    // this.instance.destroy();
+  }
 }
 
 exports.default = SocketConnection;
