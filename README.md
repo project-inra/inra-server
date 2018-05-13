@@ -1,7 +1,6 @@
 # Project Inra
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/project-inra/inra-server.svg)](https://greenkeeper.io/)
-
 [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
 
 **Inra Server** is a set of JavaScript libraries for creating back-end solutions on a higher level of abstraction. This project is very experimental, as it brings to life patterns very rarely seen in Node.js such as _inversion of control_, _dependency injectors_, _autoloaders_.
