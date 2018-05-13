@@ -1,0 +1,26 @@
+sudo: true
+dist: trusty
+language: node_js
+
+node_js:
+  - node
+
+branches:
+  only:
+    - development
+    - /^greenkeeper/.*$/
+
+cache:
+  directories:
+    - node_modules
+
+before_script:
+  - npm install -g lerna
+  - npm update
+
+install:
+  - npm install
+
+script:
+  - lerna bootstrap
+  - lerna run test
