@@ -1,0 +1,14 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "package.json",
+        "packages/inra-server-container/package.json",
+        "packages/inra-server-error/package.json",
+        "packages/inra-server-http/package.json",
+        "packages/inra-server-sequelize/package.json",
+        "packages/inra-server-socket/package.json"
+      ]
+    }
+  }
+}
