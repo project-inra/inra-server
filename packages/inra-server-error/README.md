@@ -1,8 +1,27 @@
 # inra-server-error
 
-A simple, yet powerful error handler shipped as a middleware for Koa.
+[![npm](https://img.shields.io/npm/v/inra-server-error.svg?maxAge=2592000)](https://www.npmjs.com/package/inra-server-error)
+[![Dependency Status](https://david-dm.org/project-inra/inra-server.svg?path=packages/inra-server-error)](https://david-dm.org/project-inra/inra-server.svg?path=packages/inra-server-error)
 
-> **Note**: documentation and examples are published on our [Wiki](https://github.com/project-inra/inra-server/wiki).
+A simple, yet powerful error handler shipped as a middleware for [Koa](https://koajs.com/).
+`inra-server-error` provides a set of utilities for defining and returning HTTP errors. Each utility returns an error response object which includes the following properties:
+
+```json
+{
+  "success": "…",
+  "errorCode": "…",
+  "userMessage": "…",
+  "developerMessage": "…"
+}
+```
+
+>**Note**: full documentation with more examples is published on our [Wiki](https://github.com/project-inra/inra-server/wiki). Please, refer to our [Wiki](https://github.com/project-inra/inra-server/wiki) for installation details and API references.
+
+- [Installation](#installation)
+- [API reference](#api)
+- [Contributing](#contributing)
+  - [Bug reporting](#bug-reporting)
+  - [Development](#development)
 
 ## Installation
 
@@ -12,17 +31,66 @@ $ npm install --save inra-server-error
 
 ## API
 
+```javascript
+import error, {defineError} from "inra-server-error";
+```
+
+<br>
+
 #### `error(options)`
 
 Koa errors middleware which catches exceptions thrown inside other middlewares or routes and generates a graceful response.
+
+**Example:**
+
+```javascript
+app.use(error({
+  errorCode: "Default error code"
+  httpStatus: "Default HTTP status",
+  userMessage: "Default user message",
+
+  callback(error) {
+    // Will be executed on each exception
+  }
+}));
+```
+
+<br>
 
 #### `defineError(definition)`
 
 Defines an error handler for a specified exception type.
 
-#### `handlers`
+>**Note:** to make our middleware handle custom errors, you must define an error with exception's instance. Other fields are optional.
 
-Returns defined error handlers (as a `Map`).
+**Example:**
+
+```javascript
+defineError({
+  instance: AuthWrongUsernameError,
+  errorCode: "Optional error code"
+  httpStatus: "Optional HTTP status",
+  userMessage: "Optional user message",
+
+  callback(error) {
+    // …
+  }
+});
+```
+
+```javascript
+class CustomError extends Error {
+  errorCode = 103;
+  httpStatus = 401;
+  userMessage = "Something went wrong";
+};
+
+defineError({
+  instance: CustomError
+});
+```
+
+<br>
 
 ## Contributing
 
