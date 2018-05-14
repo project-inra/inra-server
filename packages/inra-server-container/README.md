@@ -28,6 +28,7 @@ const container = new Container();
 ```
 
 <br>
+
 ####  `.set(key, value)`
 
 Adds or updates an element with a specified `key` and `value` to a Container instance. Returns the Container itself.
@@ -42,6 +43,7 @@ container.set("bar", …);
 ```
 
 <br>
+
 #### `.get(key [, defaultValue])`
 
 Returns the value associated to specified `key`, or `defaultValue` if there is none.
@@ -54,6 +56,7 @@ container.get("zoo", 1); //> 1
 ```
 
 <br>
+
 #### `.has(key)`
 
 Returns a boolean asserting whether an element with the specified `key` exists in a Container instance or not.
@@ -66,6 +69,7 @@ container.has("zoo"); //> false
 ```
 
 <br>
+
 #### `.delete(key)`
 
 Removes the value associated to specified key and returns `true` if it was deleted successfully, or `false` otherwise.
@@ -78,6 +82,7 @@ container.delete("zoo"); //> false
 ```
 
 <br>
+
 #### `.clear()`
 
 Removes all key/value pairs from a Container instance.
@@ -89,6 +94,7 @@ container.clear();
 ```
 
 <br>
+
 #### `.size`
 
 Returns the number of key/value pairs in a Container instance.
@@ -104,6 +110,7 @@ container.size; //> 3
 ```
 
 <br>
+
 ## Contributing
 
 ### Bug reporting
