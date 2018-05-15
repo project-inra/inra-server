@@ -1,203 +1,247 @@
 # inra-server-socket
 
+[![npm](https://img.shields.io/npm/v/inra-server-socket.svg?maxAge=2592000)](https://www.npmjs.com/package/inra-server-socket)
+[![Dependency Status](https://david-dm.org/project-inra/inra-server.svg?path=packages/inra-server-socket)](https://david-dm.org/project-inra/inra-server.svg?path=packages/inra-server-socket)
+
 The purpose of this component is to intercept the manipulation of most of the socket work by creating special wrappers. These wrappers allow the developer to integrate his client with `inra-server` rapidly, manipulate data, connections and/or namespaces.
 
-## Installation
+>**Note**: full documentation with more examples is published on our [Wiki](https://github.com/project-inra/inra-server/wiki). Please, refer to our [Wiki](https://github.com/project-inra/inra-server/wiki) for installation details and API references.
 
-Using [npm](https://www.npmjs.com/):
+- [Installation](#installation)
+- [API reference](#api)
+- [Contributing](#contributing)
+  - [Bug reporting](#bug-reporting)
+  - [Development](#development)
+
+## Installation
 
 ```bash
 $ npm install --save inra-server-socket
 ```
 
-**Note:** This package provides the core routing functionality for Inra Server, but you might not want to install it directly. If you are writing an application that will run on Inra Server, you should instead install `inra-server`. It will install `inra-server-socket` as a dependency.
-
-Then with a module bundler like [webpack](https://webpack.github.io/), use as you would anything else:
-
-```js
-import Socket from "inra-server-socket";
-```
-
 ## API
 
-### class `Socket` implementing `EmmitableInterface`
-
 ```javascript
-new Socket( {
-    host : "localhost",
-    port : 8082
-} );
+const socket = new Socket(config);
 ```
 
-#### `.send( id, event [, data = {}] )`
+### Socket Server
 
-Emits an `event` with `data` for a specific connection. This is usefull in event listeners on server-side, when you intercept specific events and want to send back a response for the given source.
+<br>
+
+#### `.send(id, event [, data = {}])`
+
+Emits an `event` with `data` for a specific connection. This is usefll in event listeners on server-side, when you intercept specific events and want to send back a response for the given source.
 
 **Example:**
 
 ```javascript
-var socket = new Socket();
-
-socket.on( "eventA", ( data, connection, namespace ) => {
-    socket.send( connection.id, "eventB", ...data );
-} );
+socket.on("eventA", (data, connection, namespace) => {
+  socket.send(connection.id, "eventB", ...data);
+});
 ```
 
-#### public `.emit( event [, data = {}] )`
+<br>
+
+#### `.emit(event [, data = {}])`
 
 Emits an `event` with `data` for every connection in every namespace registered.
 
 **Example:**
 
 ```javascript
-socket.emit( "event", ...data );
+socket.emit("event", ...data);
 ```
 
-#### public `.broadcast( event [, data = {}] )`
+<br>
+
+#### `.broadcast(event [, data = {}])`
 
 Emits an `event` with `data` for every connection in every namespace registered. Broadcast behaviour is the same as for `.emit` (in `Socket` only - it changes for `SocketNamespace` and `SocketConnection`).
 
 **Example:**
 
 ```javascript
-socket.broadcast( "event", ...data );
+socket.broadcast("event", ...data);
 ```
 
-#### public `.on( event, callback )`
+<br>
+
+#### `.on(event, callback)`
 
 Registers a `callback` for a specific `event` coming from all the registered namespaces. This means that `event` will be intercepted even if it was registered only for a specific `SocketNamespace`.
 
 **Note:** You can still register events which will be intercepted only by specified namespaces.
 
 ```javascript
-socket.on( "event", ( data, connection, namespace ) => {
-    // …
-} );
+socket.on("event", (data, connection, namespace) => {
+  // …
+});
 ```
 
-#### public `.create( id )`
+<br>
+
+#### `.create(id)`
 
 Creates a new room with id `room`. Automically resolves new connections and events. Returns the created room instance (`SocketNamespace`).
 
 ```javascript
-const indexNamespace = socket.create( "/" ).listen();
-const adminNamespace = socket.create( "/admin" ).use( authMiddleware ).listen();
+const indexNamespace = socket.create("/").listen();
+const adminNamespace = socket.create("/admin").use(authMiddleware).listen();
 ```
 
-#### public `.trigger( event, data, connection, namespace )`
+<br>
+
+#### `.trigger(event, data, connection, namespace)`
 
 Triggers a specific `event` with `data`, `connection` and `namespace`.
 
 ```javascript
-socket.on( "event", ( data, connection, namespace ) => {
-    if ( /* … */ ) {
-        socket.trigger( "another_event", data, connection, namespace );
-    }
-} );
+socket.on("event", (data, connection, namespace) => {
+  if (/* … */) {
+    socket.trigger("another_event", data, connection, namespace);
+  }
+});
 ```
 
-#### private `.addConnection( socket, namespace )`
+<br>
 
-Registers a connection and returns it.
-
-#### private `.removeConnection( socket )`
-
-Removes the connection corresponding to `socket`.
-
-#### public `.io`
+#### `.io`
 
 `socket.io` instance.
 
-#### public `.host`
-#### public `.port`
-#### public `.hostname`
-#### private `.config`
-#### private `.callbacks`
-#### private `.connections`
+<br>
 
----
+#### `.host`
 
-### class `SocketConnection` implementing `EmmitableInterface`
+<br>
 
-#### public `.on( event, callback )`
+#### `.port`
+
+<br>
+
+#### `.hostname`
+
+<br>
+
+#### `.config`
+
+<br>
+
+#### `.callbacks`
+
+<br>
+
+#### `.connections`
+
+<br>
+
+### Socket Connection
+
+<br>
+
+#### `.on(event, callback)`
 
 Executes `callback` on `event` from the actual socket.
 
-#### public `.emit( event [, data = {} ] )`
+<br>
+
+#### `.emit(event [, data = {}])`
 
 Emits an `event` with `data` from the actual socket.
 
-#### public `.broadcast( event [, data = {} ] )`
+<br>
+
+#### `.broadcast(event [, data = {}])`
 
 Emits an `event` with `data` to everyone else in the namespace except for the actual socket.
 
-#### public `.id`
+<br>
 
-Unique id for actual connection. Same as in `Socket.connections<id>`. Can be used for `Socket.send( id, event, data )`.
+#### `.id`
 
-#### public `.instance`
+Unique id for actual connection. Same as in `Socket.connections<id>`. Can be used for `Socket.send(id, event, data)`.
+
+<br>
+
+#### `.instance`
 
 Instance from the initial socket from `socket.io`.
 
-#### public `.namespace`
+<br>
+
+#### `.namespace`
 
 Reference to the namespace the actual socket comes from.
 
-#### public `.server`
+<br>
+
+#### `.server`
 
 Reference to the server the actual socket comes from.
 
+<br>
 
----
-
-### class `SocketNamespace` implementing `EmmitableInterface`
+### Socket Namespace
 
 Returned by `Socket.create`.
 
 ```javascript
-const indexNamespace = socket.create( "/" ).listen();
-const adminNamespace = socket.create( "/admin" ).use( authMiddleware ).listen();
+const indexNamespace = socket.create("/").listen();
+const adminNamespace = socket.create("/admin").use(authMiddleware).listen();
 
-indexNamespace.on( "event", ( data, socket ) => {
-    // accessible for all users
-} );
+indexNamespace.on("event", (data, socket) => {
+  // accessible for all users
+});
 
-adminNamespace.on( "event", ( data, socket ) => {
-    // accessible for authenticated users
-} );
+adminNamespace.on("event", (data, socket) => {
+  // accessible for authenticated users
+});
 ```
 
-#### public `.on( event, callback )`
+<br>
+
+#### `.on(event, callback)`
 
 Registers a `callback` for `event` for the actual namespace. Events registered with this method are local. This means that those events will not be intercepted by `Socket.on`.
 
-#### private `.emit( event [, data = {} ] )`
+<br>
 
-Used for internal usage. You should use `.broadcast` instead.
-
-#### public `.broadcast( event [, data = {} ] )`
+#### `.broadcast(event [, data = {}])`
 
 Emits an `event` with `data` to everyone in the actual namespace.
 
-#### public `.use( middleware )`
+<br>
+
+#### `.use(middleware)`
 
 Adds a custom middleware to the actual namespace.
 
-#### public `.listen()`
+<br>
+
+#### `.listen()`
 
 Registers customs event listeners for the actual namespace. Integrates the actual namespace with socket server. You probably want to always call this method once you've configured your namespace.
 
-#### public `.id`
+<br>
+
+#### `.id`
 
 Unique id (name) for the actual namespace.
 
-#### public `.instance`
+<br>
+
+#### `.instance`
 
 Instance of the initial room from `socket.io`.
 
-#### public `.server`
+<br>
+
+#### `.server`
 
 Reference to the server the actual namespace comes from.
+
+<br>
 
 ## Contributing
 

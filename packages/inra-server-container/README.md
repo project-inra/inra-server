@@ -23,7 +23,7 @@ $ npm install --save inra-server-container
 
 ## API
 
-```
+```javascript
 const container = new Container();
 ```
 
