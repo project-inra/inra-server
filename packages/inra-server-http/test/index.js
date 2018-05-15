@@ -60,21 +60,6 @@ describe("inra-server-http", function() {
       });
     });
 
-    describe("#addHandler(name, handler)", function() {
-      it("should have predefined handlers", function() {
-        expect(Server.middlewareHandler).to.be.an.instanceof(Function);
-        expect(Server.routerHandler).to.be.an.instanceof(Function);
-      });
-
-      it("should add default handlers", function() {
-        server.addHandler("Middleware", Server.middlewareHandler);
-        server.addHandler("Router", Server.routerHandler);
-
-        expect(server.handlers["Middleware"]).to.be.an.instanceof(Function);
-        expect(server.handlers["Router"]).to.be.an.instanceof(Function);
-      });
-    });
-
     describe("#use(middleware)", function() {
       function addMiddleware(engine) {
         return () => {
@@ -104,24 +89,17 @@ describe("inra-server-http", function() {
       }
 
       it("should import specified resource (ES6)", function() {
-        const resource = resolve(__dirname, "./resources/FooRouter.js");
-        expect(importer(resource)).to.not.throw(Error);
+        const middleware = resolve(__dirname, "./resources/ES6Middleware.js");
+        expect(importer(middleware)).to.not.throw(Error);
+
+        const route = resolve(__dirname, "./resources/ES6Router.js");
+        expect(importer(route)).to.not.throw(Error);
       });
 
       it("should import specified resource (pre ES6)", function() {
-        const resource = resolve(__dirname, "./resources/BarRouter.js");
+        const resource = resolve(__dirname, "./resources/ES5Router.js");
         expect(importer(resource)).to.not.throw(Error);
       });
-
-      it("should throw when no handler defined for resource", function () {
-        const resource = resolve(__dirname, "./resources/NotHandled.js");
-        expect(importer(resource)).to.throw(Error);
-      })
-
-      it("should use default handler no handler defined for resource", function (done) {
-        server.addHandler("default", (resource, server) => done());
-        server.import(resolve(__dirname, "./resources/NotHandled.js"));
-      })
     });
 
     describe("#run(port, callback)", function() {
@@ -135,7 +113,7 @@ describe("inra-server-http", function() {
 
   describe("Router", function () {
     it("should respond to GET requests", function(done) {
-      request("localhost:8000").get("/foo").then(res => {
+      request("localhost:8000").get("/prefix/foo").then(res => {
         expect(res).to.have.status(200);
         expect(res.body.verb).to.be.equal("GET");
 
@@ -144,7 +122,7 @@ describe("inra-server-http", function() {
     });
 
     it("should respond to PUT requests", function(done) {
-      request("localhost:8000").put("/foo").then(res => {
+      request("localhost:8000").put("/prefix/foo").then(res => {
         expect(res).to.have.status(200);
         expect(res.body.verb).to.be.equal("PUT");
 
@@ -153,7 +131,7 @@ describe("inra-server-http", function() {
     });
 
     it("should respond to DELETE requests", function(done) {
-      request("localhost:8000").delete("/foo").then(res => {
+      request("localhost:8000").delete("/prefix/foo").then(res => {
         expect(res).to.have.status(200);
         expect(res.body.verb).to.be.equal("DELETE");
 
@@ -162,7 +140,7 @@ describe("inra-server-http", function() {
     });
 
     it("should respond to POST requests", function(done) {
-      request("localhost:8000").post("/foo").then(res => {
+      request("localhost:8000").post("/prefix/foo").then(res => {
         expect(res).to.have.status(200);
         expect(res.body.verb).to.be.equal("POST");
 
@@ -171,14 +149,14 @@ describe("inra-server-http", function() {
     });
 
     it("should respond to HEAD requests", function(done) {
-      request("localhost:8000").head("/foo").then(res => {
+      request("localhost:8000").head("/prefix/foo").then(res => {
         // HEAD responses doesn't have body
         done();
       }).catch(err => done(err.message));
     });
 
     it("should respond to PATCH requests", function(done) {
-      request("localhost:8000").patch("/foo").then(res => {
+      request("localhost:8000").patch("/prefix/foo").then(res => {
         expect(res).to.have.status(200);
         expect(res.body.verb).to.be.equal("PATCH");
 
@@ -187,18 +165,18 @@ describe("inra-server-http", function() {
     });
 
     it("should respond to OPTIONS requests", function(done) {
-      request("localhost:8000").options("/foo").then(res => {
+      request("localhost:8000").options("/prefix/foo").then(res => {
         expect(res).to.have.status(200);
         expect(res.body.verb).to.be.equal("OPTIONS");
 
         done();
-        server.conn.close();
+        server.native.close();
       }).catch(err => done(err.message));
     });
 
     after(function() {
       // Runs after all tests in this block:
-      server.conn.close();
+      server.native.close();
     });
   });
 });

@@ -1,7 +1,10 @@
-import {get, put, del, post, head, patch, options} from "../../dest";
+import controller, {get, put, del, post, head, patch, options} from "../../dest/router";
 
-export default class FooRouter {
-  @get("/foo")
+@controller("/prefix")
+export default class FooRoutes {
+  @get("/foo", function () {
+    return this.Basic();
+  })
   getRequest(ctx, next) {
     ctx.body = { verb: "GET" };
   }
