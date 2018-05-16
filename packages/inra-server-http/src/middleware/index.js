@@ -1,8 +1,14 @@
 // @flow
 import App from "../";
 
+export type MiddlewareCallback = (
+  ...params: Array<any>
+) => (Function) => Promise<void> | void;
+
+export type Middlewares = {[string]: MiddlewareCallback};
+
 export interface MiddlewareInterface {
-  constructor(app: App): void;
+  constructor(app: App<*>): void;
   before(...params: Array<any>): any;
   handle(...params: Array<any>): any;
   after(...params: Array<any>): any;
@@ -48,7 +54,7 @@ function createCallback(instance: MiddlewareInterface): * {
 }
 
 export default function middleware() {
-  return (Middleware: Class<MiddlewareInterface>) => (server: App) => {
+  return (Middleware: Class<MiddlewareInterface>) => (server: App<*>) => {
     const instance: MiddlewareInterface = new Middleware(server);
 
     const name = normalizeName(Middleware.name);

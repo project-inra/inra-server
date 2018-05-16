@@ -1,10 +1,11 @@
 // @flow
 import Container from "inra-server-container";
-import {RouterInterface} from "./router";
+import type {RouterInterface} from "./router";
+import type {Middlewares} from "./middleware";
 
-export interface ConfigInterface {
-  port: number;
-}
+export type ServerConfig = {
+  port: number,
+};
 
 export interface EngineInterface {
   use: (middleware: Function) => any;
@@ -29,11 +30,15 @@ export interface EngineInterface {
  *    exist in server instance.
  */
 
-export default class App {
+export default class App<Dependencies: Object> {
+  // Limitations on Flow v0.72.0: https://github.com/facebook/flow/issues/6314
+  $key: $Keys<Dependencies>;
+  $value: $Values<Dependencies>;
+
   native: ?any;
   engine: EngineInterface;
   router: RouterInterface;
-  config: ConfigInterface = {
+  config: ServerConfig = {
     port: 8000,
   };
 
@@ -44,11 +49,11 @@ export default class App {
    * 2. `async handle(ctx, next, ...rest);`
    * 3. `async after(ctx, next, ...rest);`
    *
-   * @type    {Object}
+   * @type    {Middlewares}
    * @access  public
    * @readonly
    */
-  +middlewares: {[string]: Function} = {};
+  +middlewares: Middlewares = {};
 
   /**
    * Container used as a linked list for storing custom application data such as
@@ -66,22 +71,20 @@ export default class App {
    * injector which keeps fundamental object safe and immutable. Gives another
    * layer of abstraction for data.
    *
-   * @param   {ConfigInterface}   config
+   * @param   {ServerConfig}  config
    * @return  {Proxy<App>}
    */
-  constructor(config: ConfigInterface): App {
+  constructor(config: ServerConfig = this.config): * {
     this.config = config;
 
     return new Proxy(this, {
-      set(target: Object, key: string, value: any): boolean {
-        target.di[key] = value;
-
-        // Indicate success:
+      set(target, key, value) {
+        target.di.set(key, value);
         return true;
       },
 
-      get(target: Object, key: string): any {
-        return target[key] || target.di[key];
+      get(target, key) {
+        return target[key] || target.di.get(key);
       },
     });
   }
@@ -125,9 +128,9 @@ export default class App {
   /**
    * Mounts the specified middleware function or functions.
    *
-   * @param  {Function}  middleware
-   * @return {this}
-   * @access public
+   * @param   {Function}  middleware
+   * @return  {this}
+   * @access  public
    */
   use(middleware: Function): this {
     if (!this.engine) {
@@ -141,14 +144,15 @@ export default class App {
 
   /**
    * Imports and initialises a given resource. Each resource is a function which
-   * accepts a server instance as argument.
+   * accepts a server instance as argument. Supports both ES6 modules and olders
+   * modules.
    *
    * @param   {string}    path    Full path to the resource
    * @return  {any}
    * @access  public
    */
-  import(path: string): * {
-    let resource = require(path);
+  import<Resource: Function | {default: Function}>(path: string): * {
+    let resource: Resource = require(path);
 
     // When not using "babel-plugin-add-module-exports":
     if (typeof resource !== "function") {

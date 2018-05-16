@@ -9,8 +9,6 @@ var _inraServerContainer = require("inra-server-container");
 
 var _inraServerContainer2 = _interopRequireDefault(_inraServerContainer);
 
-var _router = require("./router");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -39,7 +37,7 @@ let App = class App {
    * injector which keeps fundamental object safe and immutable. Gives another
    * layer of abstraction for data.
    *
-   * @param   {ConfigInterface}   config
+   * @param   {ServerConfig}  config
    * @return  {Proxy<App>}
    */
 
@@ -51,11 +49,13 @@ let App = class App {
    * 2. `async handle(ctx, next, ...rest);`
    * 3. `async after(ctx, next, ...rest);`
    *
-   * @type    {Object}
+   * @type    {Middlewares}
    * @access  public
    * @readonly
    */
-  constructor(config) {
+
+  // Limitations on Flow v0.72.0: https://github.com/facebook/flow/issues/6314
+  constructor(config = this.config) {
     this.config = {
       port: 8000
     };
@@ -66,14 +66,12 @@ let App = class App {
 
     return new Proxy(this, {
       set(target, key, value) {
-        target.di[key] = value;
-
-        // Indicate success:
+        target.di.set(key, value);
         return true;
       },
 
       get(target, key) {
-        return target[key] || target.di[key];
+        return target[key] || target.di.get(key);
       }
     });
   }
@@ -127,9 +125,9 @@ let App = class App {
   /**
    * Mounts the specified middleware function or functions.
    *
-   * @param  {Function}  middleware
-   * @return {this}
-   * @access public
+   * @param   {Function}  middleware
+   * @return  {this}
+   * @access  public
    */
   use(middleware) {
     if (!this.engine) {
@@ -143,7 +141,8 @@ let App = class App {
 
   /**
    * Imports and initialises a given resource. Each resource is a function which
-   * accepts a server instance as argument.
+   * accepts a server instance as argument. Supports both ES6 modules and olders
+   * modules.
    *
    * @param   {string}    path    Full path to the resource
    * @return  {any}

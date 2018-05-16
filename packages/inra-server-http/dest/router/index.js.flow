@@ -6,7 +6,7 @@ export type RouterVerb = $Keys<typeof verbs>;
 type RouterTemp = {verb: RouterVerb, path: RouterPath, middleware: ?Function};
 
 export interface RouterInterface {
-  constructor(app: App): void;
+  constructor(app: App<*>): void;
   all: (path: RouterPath, callback: Function) => any;
   get: (path: RouterPath, callback: Function) => any;
   put: (path: RouterPath, callback: Function) => any;
@@ -64,7 +64,7 @@ Object.keys(verbs).forEach((verb) => {
  * @access  public
  */
 export default function controller(base: RouterPath = "/"): * {
-  return (Route: Class<any>) => (server: App) => {
+  return (Route: Class<any>) => (server: App<*>) => {
     const router: Object = new Route(server);
 
     Object.getOwnPropertyNames(Route.prototype)
