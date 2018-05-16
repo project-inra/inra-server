@@ -1,10 +1,10 @@
 // @flow
 import App from "../";
 
-export type MiddlewareCallback = (
-  ...params: Array<any>
-) => (Function) => Promise<void> | void;
+opaque type Rest = Array<any>;
+opaque type Resp = Promise<void> | void;
 
+export type MiddlewareCallback = (...A: Rest) => (...B: Rest) => Resp;
 export type Middlewares = {[string]: MiddlewareCallback};
 
 export interface MiddlewareInterface {
