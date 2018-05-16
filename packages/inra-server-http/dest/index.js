@@ -168,10 +168,10 @@ let App = class App {
   /**
    * Listens on a given port.
    *
-   * @param  {number}    port
-   * @param  {Function}  callback
-   * @return {this}
-   * @access public
+   * @param   {?number}     port
+   * @param   {?Function}   callback
+   * @return  {this}
+   * @access  public
    */
   run(port = this.config.port, callback) {
     if (!this.engine) {

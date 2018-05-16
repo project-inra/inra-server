@@ -166,12 +166,12 @@ export default class App {
   /**
    * Listens on a given port.
    *
-   * @param  {number}    port
-   * @param  {Function}  callback
-   * @return {this}
-   * @access public
+   * @param   {?number}     port
+   * @param   {?Function}   callback
+   * @return  {this}
+   * @access  public
    */
-  run(port: number = this.config.port, callback: Function): this {
+  run(port?: number = this.config.port, callback?: Function): this {
     if (!this.engine) {
       throw new Error("Server engine not specified");
     }
