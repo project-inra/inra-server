@@ -50,7 +50,7 @@ export interface DatabaseConfig {
  *
  *
  * @example Using raw queries
- * database.connection.query(…)
+ * database.sequelize.query(…)
  *  .then(data => console.log("Executed", data));
  *  .catch(err => console.log("Error", err));
  */
@@ -69,7 +69,7 @@ export default class Database {
    * @type    {Sequelize}
    * @access  public
    */
-  connection: Sequelize;
+  sequelize: Sequelize;
 
   /**
    * Imported models. Model keys are PascalCased and should be imported with the
@@ -108,7 +108,7 @@ export default class Database {
     return new Proxy(this, {
       // Each property in Database internals is immutable for safety
       set(target, key, value) {
-        target.di[key] = value;
+        target.di.set(key, value);
 
         return true;
       },
@@ -118,24 +118,24 @@ export default class Database {
       get(target: Object, key) {
         return (
           target[key] ||
-          target.di[key] ||
+          target.di.get(key) ||
           target.models[key] ||
-          target.connection[key]
+          target.sequelize[key]
         );
-      }
+      },
     });
   }
 
   /**
    * Tries to establish a connection with the given database's configuration.
-   * Disables `operatorsAliases` and `logging` for security purposes.
+   * Disables `operatorsAliases` for security purposes.
    *
    * @see http://docs.sequelizejs.com/class/lib/sequelize.js~Sequelize.html
    * @see http://docs.sequelizejs.com/manual/tutorial/querying.html#operators-security
    *
    * @return  {Promise<void>}
    */
-  connect(): Promise<void> {
+  connect(): * {
     const {
       database,
       username,
@@ -145,10 +145,10 @@ export default class Database {
       port,
       charset,
       collate,
-      logging
+      logging,
     } = this.config;
 
-    this.connection = new Sequelize(database, username, password, {
+    this.sequelize = new Sequelize(database, username, password, {
       host: host,
       port: port,
       dialect: dialect,
@@ -170,7 +170,7 @@ export default class Database {
       },
     });
 
-    return this.connection.authenticate().then(() => this.associate());
+    return this.sequelize.authenticate().then(() => this.associate());
   }
 
   /**
@@ -199,8 +199,8 @@ export default class Database {
    * @return  {Promise<any>}
    * @access  public
    */
-  sync(options?: SyncOptions): Promise<any> {
-    return this.connection.sync(options);
+  sync(options?: SyncOptions): * {
+    return this.sequelize.sync(options);
   }
 
   /**
@@ -211,7 +211,7 @@ export default class Database {
    * @access  public
    */
   import(src: string): void {
-    const model: Class<Model<any>> = this.connection.import(src);
+    const model: Class<Model<any>> = this.sequelize.import(src);
     const name: string = Case.pascal(model.name);
 
     this.models[name] = model;

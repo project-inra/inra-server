@@ -108,7 +108,7 @@ export default class Database {
     return new Proxy(this, {
       // Each property in Database internals is immutable for safety
       set(target, key, value) {
-        target.di[key] = value;
+        target.di.set(key, value);
 
         return true;
       },
@@ -118,7 +118,7 @@ export default class Database {
       get(target: Object, key) {
         return (
           target[key] ||
-          target.di[key] ||
+          target.di.get(key) ||
           target.models[key] ||
           target.sequelize[key]
         );

@@ -52,7 +52,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  *
  *
  * @example Using raw queries
- * database.connection.query(…)
+ * database.sequelize.query(…)
  *  .then(data => console.log("Executed", data));
  *  .catch(err => console.log("Error", err));
  */
@@ -96,7 +96,7 @@ class Database {
     return new Proxy(this, {
       // Each property in Database internals is immutable for safety
       set(target, key, value) {
-        target.di[key] = value;
+        target.di.set(key, value);
 
         return true;
       },
@@ -104,14 +104,14 @@ class Database {
       // XXX: target is actually a Database instance, but there's an error with
       //      "missing indexer property" (Flow v.0.72)
       get(target, key) {
-        return target[key] || target.di[key] || target.models[key] || target.connection[key];
+        return target[key] || target.di.get(key) || target.models[key] || target.sequelize[key];
       }
     });
   }
 
   /**
    * Tries to establish a connection with the given database's configuration.
-   * Disables `operatorsAliases` and `logging` for security purposes.
+   * Disables `operatorsAliases` for security purposes.
    *
    * @see http://docs.sequelizejs.com/class/lib/sequelize.js~Sequelize.html
    * @see http://docs.sequelizejs.com/manual/tutorial/querying.html#operators-security
@@ -148,7 +148,7 @@ class Database {
       logging
     } = this.config;
 
-    this.connection = new _sequelize2.default(database, username, password, {
+    this.sequelize = new _sequelize2.default(database, username, password, {
       host: host,
       port: port,
       dialect: dialect,
@@ -170,7 +170,7 @@ class Database {
       }
     });
 
-    return this.connection.authenticate().then(() => this.associate());
+    return this.sequelize.authenticate().then(() => this.associate());
   }
 
   /**
@@ -200,7 +200,7 @@ class Database {
    * @access  public
    */
   sync(options) {
-    return this.connection.sync(options);
+    return this.sequelize.sync(options);
   }
 
   /**
@@ -211,7 +211,7 @@ class Database {
    * @access  public
    */
   import(src) {
-    const model = this.connection.import(src);
+    const model = this.sequelize.import(src);
     const name = _case2.default.pascal(model.name);
 
     this.models[name] = model;
