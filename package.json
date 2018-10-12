@@ -13,9 +13,9 @@
     "url": "https://github.com/ProjectInra/inra-server/issues"
   },
   "devDependencies": {
-    "babel-eslint": "^8.2.3",
-    "eslint": "^4.19.1",
-    "eslint-config-google": "^0.9.1",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.0.1",
+    "eslint-config-google": "^0.10.0",
     "eslint-plugin-flowtype": "^2.46.3",
     "eslint-plugin-import": "^2.11.0",
     "flow-bin": "^0.83.0",
