@@ -23,7 +23,7 @@
     "prepare": "npm run clean && npm run build"
   },
   "dependencies": {
-    "case": "^1.5.5",
+    "case": "^1.6.0",
     "inra-server-container": "latest",
     "sequelize": "^4.37.7",
     "sequelize-cli": "^4.0.0"
