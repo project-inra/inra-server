@@ -34,7 +34,7 @@
     "babel-preset-flow": "^6.23.0",
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
-    "flow-bin": "^0.83.0",
+    "flow-bin": "^0.90.0",
     "fs-extra": "^7.0.0",
     "glob": "^7.1.2",
     "koa": "^2.5.1",
