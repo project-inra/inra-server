@@ -26,7 +26,7 @@
     "case": "^1.5.5",
     "inra-server-container": "latest",
     "sequelize": "^4.37.7",
-    "sequelize-cli": "^4.0.0"
+    "sequelize-cli": "^5.5.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
