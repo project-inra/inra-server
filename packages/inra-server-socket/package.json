@@ -32,7 +32,7 @@
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-env": "^1.7.0",
     "babel-preset-flow": "^6.23.0",
-    "flow-bin": "^0.83.0",
+    "flow-bin": "^0.107.0",
     "fs-extra": "^7.0.0",
     "glob": "^7.1.2",
     "mocha": "^5.1.1",
