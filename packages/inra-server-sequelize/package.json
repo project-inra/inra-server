@@ -25,7 +25,7 @@
   "dependencies": {
     "case": "^1.5.5",
     "inra-server-container": "latest",
-    "sequelize": "^4.37.7",
+    "sequelize": "^5.18.3",
     "sequelize-cli": "^4.0.0"
   },
   "devDependencies": {
