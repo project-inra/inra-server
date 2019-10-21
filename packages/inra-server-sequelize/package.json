@@ -38,7 +38,7 @@
     "babel-preset-flow": "^6.23.0",
     "flow-bin": "^0.83.0",
     "fs-extra": "^7.0.0",
-    "glob": "^7.1.2",
+    "glob": "^7.1.5",
     "mocha": "^5.1.1"
   }
 }
